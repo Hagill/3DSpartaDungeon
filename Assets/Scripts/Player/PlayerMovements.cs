@@ -20,15 +20,17 @@ public class PlayerMovements : MonoBehaviour
     public float lookSensitivity;
     private Vector2 mouseDelta;
 
-
+    [Header("Camera")]
+    public Camera fpCamera;
+    public Camera tpCamera;
 
     private Rigidbody _rigidbody;
-
+    private Animator _animator;
     // 이동 중인 상태
     private bool isMoving;
     private bool isRunning;
 
-    private Animator _animator;
+    public bool isFirstPerson = true;
 
     private void Awake()
     {
@@ -47,6 +49,7 @@ public class PlayerMovements : MonoBehaviour
 
         _animator.SetBool("Walk", isMoving && !isRunning);
         _animator.SetBool("Run", isMoving && isRunning);
+        _animator.SetBool("IsGrounded", IsGrounded());
     }
     private void FixedUpdate()
     {
@@ -139,5 +142,16 @@ public class PlayerMovements : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void OnCameraToggle(InputAction.CallbackContext context)
+    {
+        if(context.phase == InputActionPhase.Started)
+        {
+            isFirstPerson = !isFirstPerson; // 모드 전환
+
+            fpCamera.gameObject.SetActive(isFirstPerson);
+            tpCamera.gameObject.SetActive(!isFirstPerson);
+        }
     }
 }
