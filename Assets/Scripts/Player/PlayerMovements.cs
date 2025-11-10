@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerMovements : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class PlayerMovements : MonoBehaviour
     [Header("Camera")]
     public Camera fpCamera;
     public Camera tpCamera;
+    public Image crossHair;
 
     private Rigidbody _rigidbody;
     private Animator _animator;
@@ -150,6 +152,7 @@ public class PlayerMovements : MonoBehaviour
 
             fpCamera.gameObject.SetActive(isFirstPerson);
             tpCamera.gameObject.SetActive(!isFirstPerson);
+            crossHair.gameObject.SetActive(isFirstPerson);
         }
     }
 }
