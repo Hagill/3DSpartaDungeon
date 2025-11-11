@@ -29,6 +29,11 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         health.Add(amount);
     }
 
+    public void Rest(float amount)
+    {
+        stamina.Add(amount);
+    }
+
     public void Die()
     {
         Debug.Log("аж╠щ");
@@ -38,5 +43,16 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     {
         health.Sub(damage);
         onTakeDamage?.Invoke();
+    }
+
+    public bool UseStamina(float amount)
+    {
+        if(stamina.currentValue - amount < 0f)
+        {
+            return false;
+        }
+
+        stamina.Sub(amount);
+        return true;
     }
 }
