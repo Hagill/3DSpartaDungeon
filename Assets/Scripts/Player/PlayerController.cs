@@ -29,19 +29,23 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private Animator _animator;
-    // 이동 중인 상태
-    private bool isMoving;
-    private bool isRunning;
-
     public bool isFirstPerson = true;
+
+    // 이동 중인 상태
+    public bool isMoving;
+    public bool isRunning;
+
+    
     public Action inventory;
 
-
+    private PlayerCondition condition;
+    private bool didDoubleJump = false;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _animator = GetComponentInChildren<Animator>();
+        condition = GetComponent<PlayerCondition>();
     }
 
     void Start()
@@ -76,6 +80,7 @@ public class PlayerController : MonoBehaviour
         Vector3 dir = transform.forward * currentMovementInput.y + transform.right * currentMovementInput.x;
         // 이동속도
         float speed = isRunning ? runSpeed : moveSpeed;
+        speed *= condition.speedBoostMultiplier;
         dir *= speed;
         dir.y = _rigidbody.velocity.y;
 
@@ -123,10 +128,22 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.phase == InputActionPhase.Started && IsGrounded() && CharacterManager.Instance.Player.condition.UseStamina(useJumpStamina))
+        if(context.phase == InputActionPhase.Started)
         {
-            _animator.SetTrigger("Jump");
-            _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            if(IsGrounded() && condition.UseStamina(useJumpStamina))
+            {
+                didDoubleJump = false;
+                _animator.SetTrigger("Jump");
+                _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+            }
+            else if(!IsGrounded() && !didDoubleJump && condition.isDoubleJump && condition.UseStamina(useJumpStamina))
+            {
+                _rigidbody.velocity = new Vector3(_rigidbody.velocity.x, 0, _rigidbody.velocity.z);
+                _animator.SetTrigger("Jump");
+
+                _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
+                didDoubleJump = true;
+            }
         }
     }
 

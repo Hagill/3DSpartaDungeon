@@ -197,15 +197,7 @@ public class UIInventory : MonoBehaviour
         {
             for(int i = 0; i < selectedItem.consumables.Length; i++)
             {
-                switch (selectedItem.consumables[i].type)
-                {
-                    case ConsumableType.Health:
-                        condition.Heal(selectedItem.consumables[i].value);
-                        break;
-                    case ConsumableType.Stamina:
-                        condition.Rest(selectedItem.consumables[i].value);
-                        break;
-                }
+                condition.ApplyConsumableEffect(selectedItem.consumables[i]);
             }
             RemoveSelectedItem();
         }
