@@ -20,6 +20,10 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     public bool isInfiniteStamina = false;
     public bool isInvincible = false;
     public float speedBoostMultiplier = 1.0f;
+
+    private Coroutine doubleJumpCoroutine;
+    private Coroutine infiniteStaminaCoroutine;
+    private Coroutine invincibleCoroutine;
     private Coroutine speedBoostCoroutine;
 
     public float useStaminaRateForRun = 5f;
@@ -87,6 +91,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
         return true;
     }
 
+    // 아이템 효과
     public void ApplyConsumableEffect(ItemDataConsumable consumable)
     {
         switch (consumable.type)
@@ -98,13 +103,16 @@ public class PlayerCondition : MonoBehaviour, IDamagable
                 Rest(consumable.value);
                 break;
             case ConsumableType.DoubleJump:
-                StartCoroutine(DoubleJumpBuffCoroutine(consumable.duration));
+                if (doubleJumpCoroutine != null) StopCoroutine(doubleJumpCoroutine);
+                doubleJumpCoroutine = StartCoroutine(DoubleJumpBuffCoroutine(consumable.duration));
                 break;
             case ConsumableType.InfiniteStamina:
-                StartCoroutine(InfiniteStaminaBuffCoroutine(consumable.duration));
+                if (infiniteStaminaCoroutine != null) StopCoroutine(infiniteStaminaCoroutine);
+                infiniteStaminaCoroutine = StartCoroutine(InfiniteStaminaBuffCoroutine(consumable.duration));
                 break;
             case ConsumableType.Invincibility:
-                StartCoroutine(InvincibilityBuffCoroutine(consumable.duration));
+                if (invincibleCoroutine != null) StopCoroutine(invincibleCoroutine);
+                invincibleCoroutine = StartCoroutine(InvincibilityBuffCoroutine(consumable.duration));
                 break;
             case ConsumableType.SpeedBoost:
                 if (speedBoostCoroutine != null) StopCoroutine(speedBoostCoroutine);
@@ -116,40 +124,44 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     // 2단 점프 버프 코루틴
     IEnumerator DoubleJumpBuffCoroutine(float duration)
     {
-        Debug.Log($"2단 점프 버프 시작! {duration}초 지속.");
+        Debug.Log($"2단 점프 버프 시작");
         isDoubleJump = true;
         yield return new WaitForSeconds(duration);
         isDoubleJump = false;
         Debug.Log("2단 점프 버프 종료.");
+        doubleJumpCoroutine = null;
     }
 
     // 무한 스태미나 버프 코루틴
     IEnumerator InfiniteStaminaBuffCoroutine(float duration)
     {
-        Debug.Log($"무한 스태미나 버프 시작! {duration}초 지속.");
+        Debug.Log($"무한 스태미나 버프 시작");
         isInfiniteStamina = true;
         yield return new WaitForSeconds(duration);
         isInfiniteStamina = false;
         Debug.Log("무한 스태미나 버프 종료.");
+        infiniteStaminaCoroutine = null;
     }
 
     // 무적 버프 코루틴
     IEnumerator InvincibilityBuffCoroutine(float duration)
     {
-        Debug.Log($"무적 버프 시작! {duration}초 지속.");
+        Debug.Log($"무적 버프 시작");
         isInvincible = true;
         yield return new WaitForSeconds(duration);
         isInvincible = false;
         Debug.Log("무적 버프 종료.");
+        invincibleCoroutine = null;
     }
 
     // 속도 증가 버프 코루틴
     IEnumerator SpeedBoostBuffCoroutine(float speedAmount, float duration)
     {
-        Debug.Log($"속도 증가 버프 시작! {duration}초 동안 {speedAmount} 증가.");
+        Debug.Log($"속도 증가 버프 시작");
         speedBoostMultiplier = 1.0f + (speedAmount / 100f);
         yield return new WaitForSeconds(duration);
         speedBoostMultiplier = 1.0f;
         Debug.Log("속도 증가 버프 종료.");
+        speedBoostCoroutine = null;
     }
 }

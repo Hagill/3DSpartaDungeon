@@ -132,7 +132,6 @@ public class PlayerController : MonoBehaviour
         {
             if(IsGrounded() && condition.UseStamina(useJumpStamina))
             {
-                didDoubleJump = false;
                 _animator.SetTrigger("Jump");
                 _rigidbody.AddForce(Vector2.up * jumpForce, ForceMode.Impulse);
             }
@@ -162,6 +161,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Physics.Raycast(rays[i], 0.1f, groundLayerMask))
             {
+                didDoubleJump = false;
                 return true;
             }
         }
