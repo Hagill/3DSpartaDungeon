@@ -10,6 +10,7 @@ public class PlayerCondition : MonoBehaviour, IDamagable
 {
     public UICondition uiCondition;
     private PlayerController controller;
+    public UIItemDuration itemDuration;
 
     Condition health { get { return uiCondition.health; } }
     Condition stamina {  get { return uiCondition.stamina; } }
@@ -92,32 +93,41 @@ public class PlayerCondition : MonoBehaviour, IDamagable
     }
 
     // 아이템 효과
-    public void ApplyConsumableEffect(ItemDataConsumable consumable)
+    public void ApplyConsumableEffect(ItemData itemData)
     {
-        switch (consumable.type)
+        Sprite icon = itemData.icon;
+
+        foreach(ItemDataConsumable consumable in itemData.consumables)
         {
-            case ConsumableType.Health:
-                Heal(consumable.value);
-                break;
-            case ConsumableType.Stamina:
-                Rest(consumable.value);
-                break;
-            case ConsumableType.DoubleJump:
-                if (doubleJumpCoroutine != null) StopCoroutine(doubleJumpCoroutine);
-                doubleJumpCoroutine = StartCoroutine(DoubleJumpBuffCoroutine(consumable.duration));
-                break;
-            case ConsumableType.InfiniteStamina:
-                if (infiniteStaminaCoroutine != null) StopCoroutine(infiniteStaminaCoroutine);
-                infiniteStaminaCoroutine = StartCoroutine(InfiniteStaminaBuffCoroutine(consumable.duration));
-                break;
-            case ConsumableType.Invincibility:
-                if (invincibleCoroutine != null) StopCoroutine(invincibleCoroutine);
-                invincibleCoroutine = StartCoroutine(InvincibilityBuffCoroutine(consumable.duration));
-                break;
-            case ConsumableType.SpeedBoost:
-                if (speedBoostCoroutine != null) StopCoroutine(speedBoostCoroutine);
-                speedBoostCoroutine = StartCoroutine(SpeedBoostBuffCoroutine(consumable.value, consumable.duration));
-                break;
+            switch (consumable.type)
+            {
+                case ConsumableType.Health:
+                    Heal(consumable.value);
+                    break;
+                case ConsumableType.Stamina:
+                    Rest(consumable.value);
+                    break;
+                case ConsumableType.DoubleJump:
+                    if (doubleJumpCoroutine != null) StopCoroutine(doubleJumpCoroutine);
+                    doubleJumpCoroutine = StartCoroutine(DoubleJumpBuffCoroutine(consumable.duration));
+                    itemDuration.AddBuff(consumable.type, icon, consumable.duration);
+                    break;
+                case ConsumableType.InfiniteStamina:
+                    if (infiniteStaminaCoroutine != null) StopCoroutine(infiniteStaminaCoroutine);
+                    infiniteStaminaCoroutine = StartCoroutine(InfiniteStaminaBuffCoroutine(consumable.duration));
+                    itemDuration.AddBuff(consumable.type, icon, consumable.duration);
+                    break;
+                case ConsumableType.Invincibility:
+                    if (invincibleCoroutine != null) StopCoroutine(invincibleCoroutine);
+                    invincibleCoroutine = StartCoroutine(InvincibilityBuffCoroutine(consumable.duration));
+                    itemDuration.AddBuff(consumable.type, icon, consumable.duration);
+                    break;
+                case ConsumableType.SpeedBoost:
+                    if (speedBoostCoroutine != null) StopCoroutine(speedBoostCoroutine);
+                    speedBoostCoroutine = StartCoroutine(SpeedBoostBuffCoroutine(consumable.value, consumable.duration));
+                    itemDuration.AddBuff(consumable.type, icon, consumable.duration);
+                    break;
+            }
         }
     }
 

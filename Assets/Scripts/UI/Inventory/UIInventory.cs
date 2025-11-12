@@ -179,10 +179,19 @@ public class UIInventory : MonoBehaviour
         selectedStatName.text = string.Empty;
         selectedStatValue.text = string.Empty;
 
-        for(int i = 0; i < selectedItem.consumables.Length; i++)
+        for (int i = 0; i < selectedItem.consumables.Length; i++)
         {
-            selectedStatName.text += selectedItem.consumables[i].type.ToSafeString() + '\n';
-            selectedStatValue.text += selectedItem.consumables[i].value.ToString() + '\n';
+            if (selectedItem.consumables[i].type == ConsumableType.Health || selectedItem.consumables[i].type == ConsumableType.Stamina)
+            {
+                selectedStatName.text += selectedItem.consumables[i].type.ToSafeString() + '\n';
+                selectedStatValue.text += selectedItem.consumables[i].value.ToString() + '\n';
+            }
+            else
+            {
+                selectedStatName.text += "지속시간";
+                selectedStatValue.text += selectedItem.consumables[i].duration.ToString() + "초";
+            }
+            
         }
 
         useButton.SetActive(selectedItem.type == ItemType.Consumable);
@@ -195,10 +204,7 @@ public class UIInventory : MonoBehaviour
     {
         if(selectedItem.type == ItemType.Consumable)
         {
-            for(int i = 0; i < selectedItem.consumables.Length; i++)
-            {
-                condition.ApplyConsumableEffect(selectedItem.consumables[i]);
-            }
+            condition.ApplyConsumableEffect(selectedItem);
             RemoveSelectedItem();
         }
     }
