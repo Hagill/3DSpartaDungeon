@@ -14,10 +14,14 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundLayerMask;
 
     [Header("Look")]
-    public Transform camObj;
-    public float minXLook;
-    public float maxXLook;
-    private float camCurXRot;
+    public Transform fpCamObj;
+    public Transform tpCamObj;
+    public float fpMinXLook;
+    public float fpMaxXLook;
+    public float tpMinXLook;
+    public float tpMaxXLook;
+    private float fpCamCurXRot;
+    private float tpCamCurXRot;
     public float lookSensitivity;
     private Vector2 mouseDelta;
     public bool canLook = true;
@@ -29,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private Animator _animator;
-    public bool isFirstPerson = true;
+    private bool isFirstPerson = true;
 
     // 이동 중인 상태
     public bool isMoving;
@@ -89,11 +93,22 @@ public class PlayerController : MonoBehaviour
 
     void playerLook()
     {
-        camCurXRot += mouseDelta.y * lookSensitivity;
-        camCurXRot = Mathf.Clamp(camCurXRot, minXLook, maxXLook);
-        camObj.localEulerAngles = new Vector3(-camCurXRot, 0, 0);
+        if (isFirstPerson)
+        {
+            fpCamCurXRot += mouseDelta.y * lookSensitivity;
+            fpCamCurXRot = Mathf.Clamp(fpCamCurXRot, fpMinXLook, fpMaxXLook);
+            fpCamObj.localEulerAngles = new Vector3(-fpCamCurXRot, 0, 0);
 
-        transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+            transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+        }
+        else
+        {
+            tpCamCurXRot += mouseDelta.y * lookSensitivity;
+            tpCamCurXRot = Mathf.Clamp(tpCamCurXRot, tpMinXLook, tpMaxXLook);
+            tpCamObj.localEulerAngles = new Vector3(-tpCamCurXRot, 0, 0);
+
+            transform.eulerAngles += new Vector3(0, mouseDelta.x * lookSensitivity, 0);
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
