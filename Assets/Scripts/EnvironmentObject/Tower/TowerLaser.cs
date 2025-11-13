@@ -22,6 +22,8 @@ public class TowerLaser : MonoBehaviour
     public float shakeDuration;
     public float shakeMagnitude;
 
+    public PlayerController controller;
+
     private bool trapActivated = false;
     private bool playerDetected = false;
 
@@ -63,8 +65,28 @@ public class TowerLaser : MonoBehaviour
         {
             camera = Camera.main;
         }
+
+        if (controller != null)
+        {
+            camera = controller.GetCurCamera();
+            controller.OnActiveCameraChanged += UpdateCamera;
+        }
+        else
+        {
+            if (camera == null)
+            {
+                camera = Camera.main;
+            }
+        }
     }
 
+    private void OnDisable()
+    {
+        if (controller != null)
+        {
+            controller.OnActiveCameraChanged -= UpdateCamera;
+        }
+    }
     private void Update()
     {
         if (trapActivated) return;
@@ -150,5 +172,10 @@ public class TowerLaser : MonoBehaviour
         }
 
         camera.transform.localPosition = originalPosition;
+    }
+
+    private void UpdateCamera(Camera camera)
+    {
+        this.camera = camera;
     }
 }

@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
     private PlayerCondition condition;
     private bool didDoubleJump = false;
 
+    public event Action<Camera> OnActiveCameraChanged;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -186,6 +188,11 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
+    public Camera GetCurCamera()
+    {
+        return isFirstPerson ? fpCamera : tpCamera;
+    }
+
     public void OnCameraToggle(InputAction.CallbackContext context)
     {
         if (context.phase == InputActionPhase.Started)
@@ -195,6 +202,8 @@ public class PlayerController : MonoBehaviour
             fpCamera.gameObject.SetActive(isFirstPerson);
             tpCamera.gameObject.SetActive(!isFirstPerson);
             crossHair.gameObject.SetActive(isFirstPerson);
+
+            OnActiveCameraChanged?.Invoke(GetCurCamera());
         }
     }
 

@@ -13369,9 +13369,10 @@ MonoBehaviour:
   smokeParticleSystem: {fileID: 1559235169}
   bridgeObject: {fileID: 919132148252742425}
   bridgeAppearTime: 2
-  camera: {fileID: 7824083644126950716}
+  camera: {fileID: 0}
   shakeDuration: 2
   shakeMagnitude: 0.5
+  controller: {fileID: 2096515277}
   yOffset: 1
 --- !u!4 &1368664481 stripped
 Transform:
