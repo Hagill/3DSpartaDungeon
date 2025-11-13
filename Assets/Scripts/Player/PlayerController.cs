@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     private float tpCamCurXRot;
     public float lookSensitivity;
     private Vector2 mouseDelta;
-    public bool canLook = true;
+    private bool canLook;
 
     [Header("Camera")]
     public Camera fpCamera;
@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
     
     public Action inventory;
+    public Action tutorial;
 
     private PlayerCondition condition;
     private bool didDoubleJump = false;
@@ -54,7 +55,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.None;
+        canLook = false;
     }
 
     private void Update()
@@ -210,5 +212,14 @@ public class PlayerController : MonoBehaviour
         bool toggle = Cursor.lockState == CursorLockMode.Locked;
         Cursor.lockState = toggle ? CursorLockMode.None : CursorLockMode.Locked;
         canLook = !toggle;
+    }
+
+    public void OnTutorial(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            tutorial?.Invoke();
+            ToggleCursor();
+        }
     }
 }
