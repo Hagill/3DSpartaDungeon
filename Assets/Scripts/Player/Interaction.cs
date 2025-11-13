@@ -14,7 +14,9 @@ public class Interaction : MonoBehaviour
     public GameObject curInteractGameObj;
     private IInteractable curInteractable;
 
+    public TextMeshProUGUI interactionText;
     public TextMeshProUGUI promptText;
+    
     private Camera camera;
 
     void Start()
@@ -45,6 +47,7 @@ public class Interaction : MonoBehaviour
             {
                 curInteractGameObj = null;
                 curInteractable = null;
+                interactionText.gameObject.SetActive(false);
                 promptText.gameObject.SetActive(false);
             }
         }
@@ -52,6 +55,7 @@ public class Interaction : MonoBehaviour
 
     private void SetPromptText()
     {
+        interactionText.gameObject.SetActive(true);
         promptText.gameObject.SetActive(true);
         promptText.text = curInteractable.GetInteractPrompt();
     }
